@@ -26,9 +26,9 @@ public class InterFace {
         jf.setResizable(false);
 
         JLabel text1=new JLabel("输入训练集路径:");
-        JTextField jTextField1 = new JTextField("D:\\gitArea\\Chestnut_box\\Java\\DecisionTree\\tree\\src\\datasource\\d.txt",columnWidth);
+        JTextField jTextField1 = new JTextField("D:\\gitArea\\GooseberryBox-Java-\\DecisionTree\\src\\datasource\\d.txt",columnWidth);
         JLabel text3=new JLabel("输入测试集路径:");
-        JTextField jTextField2 = new JTextField("D:\\gitArea\\Chestnut_box\\Java\\DecisionTree\\tree\\src\\datasource\\e.txt",columnWidth);
+        JTextField jTextField2 = new JTextField("D:\\gitArea\\GooseberryBox-Java-\\DecisionTree\\src\\datasource\\e.txt",columnWidth);
         JLabel text4 =new JLabel("单条内容测试:");
         JTextField jTextField3 = new JTextField("晴 中 低 是 true",columnWidth);
         JButton pullIn = new JButton("引入");
@@ -52,11 +52,11 @@ public class InterFace {
                     id3Tree[0] =tempId3Tree;
                     textArea.append("决策树构建完成\n");
                 }catch (FileNotFoundException e){
-                    textArea.append("文件未被找到,请检查路径");
+                    textArea.append("文件未被找到,请检查路径\n");
                 }catch (IOException e){
-                    textArea.append("文件输入流发生错误,请检查路径");
+                    textArea.append("文件输入流发生错误,请检查路径\n");
                 }catch (Exception e){
-                    textArea.append("发生错误,请检查");
+                    textArea.append("发生错误,请检查\n");
                 }finally {
                     textArea.append("\n");
                 }
@@ -115,7 +115,7 @@ public class InterFace {
                         textArea.append("并于预期相悖论,预期的结果为'"+strings[strings.length-1]+"'\n");
                     }
                 } catch (SecondException secondException) {
-                    textArea.append(secondException.getMessage());
+                    textArea.append(secondException.getMessage()+"\n");
                 }finally {
                     textArea.append("\n");
                 }
