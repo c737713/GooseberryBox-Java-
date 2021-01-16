@@ -1,5 +1,10 @@
 package algorithm;
 
+import struct.ErrorResult;
+import struct.OutPutNode;
+import struct.OutPutResult;
+import struct.TestResult;
+
 import java.util.*;
 
 import static java.lang.String.format;
@@ -10,7 +15,7 @@ import static java.lang.String.format;
 public class Id3Tree {
     DataBase forTrainingData;
     DataBase forTestingData;
-    Integer deepth;
+    Integer depth;
 
     public void setForTestingData(DataBase forTestingData) {
         this.forTestingData = forTestingData;
@@ -20,8 +25,9 @@ public class Id3Tree {
 
     public Id3Tree(DataBase forTrainingData) {
         this.forTrainingData = forTrainingData;
-        this.deepth=10086;
+        this.depth =10086;
         root = new TreeNode();
+        root.depth=0;
         if (forTrainingData.tupleArrayList.size() == 0) {
             System.out.println("非法字符");
             root = null;
@@ -36,7 +42,7 @@ public class Id3Tree {
             root.indexList.add(i);
         }
         createTree();
-        this.deepth=-1;
+        this.depth =-1;
     }
 
     public void createTree() {
@@ -47,8 +53,9 @@ public class Id3Tree {
             Status tempStatus = forTrainingData.availableA(tempNode.indexList);
             if (tempStatus.oneStatus) {
                 tempNode.leafValue = forTrainingData.tupleArrayList.get(tempNode.indexList.get(0)).labelValue;
-                tempNode.attribute = "叶子节点";
+                tempNode.attribute = "叶子";
                 tempNode.indexList = null;
+                tempNode.childList=null;
             } else {
                 Attribute attribute = forTrainingData.highestInfoGainIndex(tempStatus.aList, tempNode.indexList);
                 tempNode.attribute = attribute.name;
@@ -57,6 +64,7 @@ public class Id3Tree {
                     TreeNode childNode = new TreeNode();
                     childNode.outPut = attribute.optionLists.get(i).optionName;
                     childNode.indexList = attribute.optionLists.get(i).indexList;
+                    childNode.depth= tempNode.depth+1;
                     tempNode.childList.add(childNode);
                     nodeQueue.offer(childNode);
                 }
@@ -67,39 +75,18 @@ public class Id3Tree {
     /**
      * @apiNote 层序遍历决策树
      */
-    public void printTree() {
-        Queue<TreeNode> tempQueue = new LinkedList<>();
-        TreeNode cur ;
-        tempQueue.add(root);
-        while (!tempQueue.isEmpty()) {
-            cur = tempQueue.remove();
-            String out;
-            if(cur.leafValue==null){
-                out=format("{(%s)%s}",cur.attribute,cur.outPut);
-            }else{
-                out=format("{(%s)%s}",cur.leafValue,cur.outPut);
-            }
-            System.out.println(out);
-            if (cur.leafValue == null) {
-                for (int i = 0, length = cur.childList.size(); i < length; i++) {
-                    tempQueue.add(cur.childList.get(i));
-                }
-            }
-        }
-        System.out.println("遍历完成");
-    }
 
     public TestResult test(Tuple target) throws SecondException{
         if(target.infoList.length!=this.forTrainingData.stringArrayList.size()){
             throw new SecondException("待测试数据集列数错误");
         }
         TestResult resultSet=new TestResult();
-        resultSet.deepValues=1;
+        resultSet.setDeepValues(1);
         TreeNode cur=this.root;
         while(cur.leafValue==null){
             boolean found=false;
             int flag=this.forTrainingData.attributeIndex(cur.attribute);
-            resultSet.deepValues++;
+            resultSet.setDeepValues(resultSet.getDeepValues()+1);
             for (TreeNode tempNode: cur.childList) {
                 if(target.infoList[flag].equals(tempNode.outPut)){
                     cur=tempNode;
@@ -108,12 +95,12 @@ public class Id3Tree {
                 }
             }
             if(!found){
-                resultSet.decisionRes = this.forTrainingData.whichMore(cur.indexList);
-                resultSet.resourceRes = target.labelValue;
+                resultSet.setDecisionRes(this.forTrainingData.whichMore(cur.indexList));
+                resultSet.setResourceRes(target.labelValue);
             }
         }
-        resultSet.decisionRes = cur.leafValue;
-        resultSet.resourceRes = target.labelValue;
+        resultSet.setDecisionRes(cur.leafValue);
+        resultSet.setResourceRes(target.labelValue);
         return resultSet;
     }
 
@@ -124,12 +111,12 @@ public class Id3Tree {
         ArrayList<ErrorResult> errorList = new ArrayList<>();
         for (int i = 0; i < target.tupleArrayList.size(); i++) {
             TestResult ts=this.test(target.tupleArrayList.get(i));
-            if(ts.deepValues>deep){
-                deep= ts.deepValues;
+            if(ts.getDeepValues()>deep){
+                deep= ts.getDeepValues();
             }
-            if(!Objects.equals(ts.decisionRes, ts.resourceRes)){
+            if(!Objects.equals(ts.getDecisionRes(), ts.getResourceRes())){
                 correct=false;
-                errorList.add(new ErrorResult(ts.decisionRes,i));
+                errorList.add(new ErrorResult(ts.getDecisionRes(),i));
             }
         }
         sb.append(" 树的深度为:").append(deep);
@@ -140,14 +127,15 @@ public class Id3Tree {
             sb.append(",可是验证结果错误,出错的结果集如下:\n");
             System.out.println(sb);
             for (int i = 0; i < errorList.size(); i++) {
-                for (int i1 = 0; i1 < target.tupleArrayList.get(errorList.get(i).index).infoList.length; i1++) {
-                    sb.append(target.tupleArrayList.get(i).infoList[i1]+" ");
+                for (int i1 = 0; i1 < target.tupleArrayList.get(errorList.get(i).getIndex()).infoList.length; i1++) {
+                    sb.append(target.tupleArrayList.get(i).infoList[i1]).append(" ");
                 }
                 sb.append(format("原数据集上的标签值为%s,而决策的结果为%s\n",
-                        target.tupleArrayList.get(errorList.get(i).index).labelValue,
-                        errorList.get(i).errorInfo));
+                        target.tupleArrayList.get(errorList.get(i).getIndex()).labelValue,
+                        errorList.get(i).getErrorInfo()));
             }
         }
+        this.depth=deep;
         return sb.toString();
     }
 
@@ -199,4 +187,37 @@ public class Id3Tree {
         result.add(cur);
         return result;
     }
+
+    public ArrayList<OutPutNode> preOrderHelper(){
+        ArrayList<OutPutNode> result=new ArrayList<>();
+        preOrder(result,root,false,false);
+        return result;
+    }
+
+    public void preOrder(ArrayList<OutPutNode> target,TreeNode cur,Boolean f,Boolean l){
+        if(cur.childList!=null){
+            OutPutNode outPutNode=new OutPutNode(cur.outPut, cur.attribute, f,l, cur.depth);
+            target.add(outPutNode);
+        }else{
+            OutPutNode outPutNode=new OutPutNode(cur.outPut, cur.leafValue, f,l, cur.depth);
+            target.add(outPutNode);
+            return;
+        }
+        for (int i = 0; i < cur.childList.size(); i++) {
+            Boolean first=(i==0);
+            Boolean last=(i==cur.childList.size()-1);
+            preOrder(target,cur.childList.get(i),first,last);
+        }
+    }
+
+    public String printTree() throws SecondException{
+        ArrayList<OutPutNode> outPutNodes=preOrderHelper();
+        if(this.depth==-1){
+            throw new SecondException("请在验证完成后,再打印树");
+        }
+        OutPutResult outPutResult=new OutPutResult(this.depth);
+        return outPutResult.getResult(outPutNodes);
+    }
 }
+
+

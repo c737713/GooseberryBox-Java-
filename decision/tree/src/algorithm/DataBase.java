@@ -62,7 +62,7 @@ public class DataBase {
     /**
      * @param tA:下标数组的范围
      * @return :信息熵
-     * 计算信息熵:区域内正标签比重与负标签比重经过一定计算得到的值,用来计算比重的优先级
+     * @apiNote :计算信息熵:区域内正标签比重与负标签比重经过一定计算得到的值,用来计算比重的优先级
      */
 
     private double informationEntropy(ArrayList<Integer> tA){

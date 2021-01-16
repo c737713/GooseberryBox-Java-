@@ -9,6 +9,7 @@ public class TreeNode {
     String outPut;
     String leafValue;
     String attribute;
+    Integer depth;
 
     ArrayList<Integer> indexList;
     ArrayList<TreeNode> childList;
@@ -19,6 +20,7 @@ public class TreeNode {
         indexList = new ArrayList<>();
         childList = null;
         attribute = null;
+        depth=null;
     }
 
     public String getOutPut() {
@@ -31,5 +33,9 @@ public class TreeNode {
 
     public String getAttribute() {
         return attribute;
+    }
+
+    public Integer getDepth() {
+        return depth;
     }
 }
