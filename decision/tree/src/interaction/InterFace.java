@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 /**
  * @author Mr Chippy
+ * @apiNote 作为界面语言的主函数
  */
 public class InterFace {
     public static void main(String[] args) {
@@ -30,7 +31,7 @@ public class InterFace {
         JLabel text3=new JLabel("输入测试集路径:");
         JTextField jTextField2 = new JTextField("D:\\gitArea\\GooseberryBox-Java-\\DecisionTree\\src\\datasource\\e.txt",columnWidth);
         JLabel text4 =new JLabel("单条内容测试:");
-        JTextField jTextField3 = new JTextField("晴 中 低 是 true",columnWidth);
+        JTextField jTextField3 = new JTextField("乌黑 稍蜷 沉闷 稍糊 稍凹 硬滑 否",columnWidth);
         JButton pullIn = new JButton("引入");
         JButton ver = new JButton("验证");
         JButton exam = new JButton("测试");
