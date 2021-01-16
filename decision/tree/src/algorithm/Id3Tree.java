@@ -10,7 +10,7 @@ import static java.lang.String.format;
 public class Id3Tree {
     DataBase forTrainingData;
     DataBase forTestingData;
-    Integer deepth;
+    Integer depth;
 
     public void setForTestingData(DataBase forTestingData) {
         this.forTestingData = forTestingData;
@@ -20,7 +20,7 @@ public class Id3Tree {
 
     public Id3Tree(DataBase forTrainingData) {
         this.forTrainingData = forTrainingData;
-        this.deepth=10086;
+        this.depth =10086;
         root = new TreeNode();
         if (forTrainingData.tupleArrayList.size() == 0) {
             System.out.println("非法字符");
@@ -36,7 +36,7 @@ public class Id3Tree {
             root.indexList.add(i);
         }
         createTree();
-        this.deepth=-1;
+        this.depth =-1;
     }
 
     public void createTree() {
@@ -141,7 +141,7 @@ public class Id3Tree {
             System.out.println(sb);
             for (int i = 0; i < errorList.size(); i++) {
                 for (int i1 = 0; i1 < target.tupleArrayList.get(errorList.get(i).index).infoList.length; i1++) {
-                    sb.append(target.tupleArrayList.get(i).infoList[i1]+" ");
+                    sb.append(target.tupleArrayList.get(i).infoList[i1]).append(" ");
                 }
                 sb.append(format("原数据集上的标签值为%s,而决策的结果为%s\n",
                         target.tupleArrayList.get(errorList.get(i).index).labelValue,
