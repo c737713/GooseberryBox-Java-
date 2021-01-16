@@ -33,12 +33,13 @@ public class MainInterFace extends JFrame {
     JTextField jTextField3;
     ArrayList<JLabel> jLabels;
     JPanel jPanel;
+    MyWindow myWindow;
 
     public MainInterFace() throws HeadlessException {
         super("决策树(id3)");
-        this.columnWidth = 38;
+        this.columnWidth = 35;
 
-        this.setBounds(400,300,410,500);
+        this.setBounds(400,300,380,500);
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
         this.setResizable(false);
         myself=this;
@@ -60,12 +61,14 @@ public class MainInterFace extends JFrame {
         this.exam = new JButton("测试");
         this.testOneByOne = new JButton("逐个测试");
         this.print = new JButton("层序打印");
-        JLabel text5 = new JLabel("显示区:                                               ");
+        JLabel text5 = new JLabel("显示区:                                                                                                             ");
         jLabels.add(text5);
         textArea =new JTextArea("",15,columnWidth);
-        textArea.setLineWrap(true);
         jPanel=new JPanel();
         jPanel.add(new JScrollPane(textArea));
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        myWindow=new MyWindow(myself);
     }
 
     public void buttonFunctionInitialization(){
@@ -73,6 +76,8 @@ public class MainInterFace extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try{
+                    myWindow.dispose();
+                    myWindow.jTextArea.setText(" ");
                     id3Tree=null;
                     Id3Tree tempId3Tree=new Id3Tree(DataBase.getDataBaseByFile(jTextField1.getText()));
                     tempId3Tree.setForTestingData(DataBase.getDataBaseByFile(jTextField2.getText()));
@@ -149,7 +154,23 @@ public class MainInterFace extends JFrame {
             }
         });
 
-
+        print.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(id3Tree==null){
+                    textArea.append("请先引入数据集\n");
+                }else{
+                    try{
+                        myWindow.setVisible(true);
+                        myWindow.jTextArea.append(id3Tree.printTree());
+                    }catch (SecondException exception){
+                        textArea.append(exception.getMessage()+"\n");
+                    }finally {
+                        textArea.append("\n");
+                    }
+                }
+            }
+        });
     }
 
     public void ending(){

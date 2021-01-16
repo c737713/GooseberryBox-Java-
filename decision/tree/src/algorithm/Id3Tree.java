@@ -1,6 +1,8 @@
 package algorithm;
 
 import struct.ErrorResult;
+import struct.OutPutNode;
+import struct.OutPutResult;
 import struct.TestResult;
 
 import java.util.*;
@@ -51,8 +53,9 @@ public class Id3Tree {
             Status tempStatus = forTrainingData.availableA(tempNode.indexList);
             if (tempStatus.oneStatus) {
                 tempNode.leafValue = forTrainingData.tupleArrayList.get(tempNode.indexList.get(0)).labelValue;
-                tempNode.attribute = "叶子节点";
+                tempNode.attribute = "叶子";
                 tempNode.indexList = null;
+                tempNode.childList=null;
             } else {
                 Attribute attribute = forTrainingData.highestInfoGainIndex(tempStatus.aList, tempNode.indexList);
                 tempNode.attribute = attribute.name;
@@ -72,27 +75,6 @@ public class Id3Tree {
     /**
      * @apiNote 层序遍历决策树
      */
-    public void printTree() {
-        Queue<TreeNode> tempQueue = new LinkedList<>();
-        TreeNode cur ;
-        tempQueue.add(root);
-        while (!tempQueue.isEmpty()) {
-            cur = tempQueue.remove();
-            String out;
-            if(cur.leafValue==null){
-                out=format("{(%s)%s}",cur.attribute,cur.outPut);
-            }else{
-                out=format("{(%s)%s}",cur.leafValue,cur.outPut);
-            }
-            System.out.println(out);
-            if (cur.leafValue == null) {
-                for (int i = 0, length = cur.childList.size(); i < length; i++) {
-                    tempQueue.add(cur.childList.get(i));
-                }
-            }
-        }
-        System.out.println("遍历完成");
-    }
 
     public TestResult test(Tuple target) throws SecondException{
         if(target.infoList.length!=this.forTrainingData.stringArrayList.size()){
@@ -204,6 +186,37 @@ public class Id3Tree {
         }
         result.add(cur);
         return result;
+    }
+
+    public ArrayList<OutPutNode> preOrderHelper(){
+        ArrayList<OutPutNode> result=new ArrayList<>();
+        preOrder(result,root,false,false);
+        return result;
+    }
+
+    public void preOrder(ArrayList<OutPutNode> target,TreeNode cur,Boolean f,Boolean l){
+        if(cur.childList!=null){
+            OutPutNode outPutNode=new OutPutNode(cur.outPut, cur.attribute, f,l, cur.depth);
+            target.add(outPutNode);
+        }else{
+            OutPutNode outPutNode=new OutPutNode(cur.outPut, cur.leafValue, f,l, cur.depth);
+            target.add(outPutNode);
+            return;
+        }
+        for (int i = 0; i < cur.childList.size(); i++) {
+            Boolean first=(i==0);
+            Boolean last=(i==cur.childList.size()-1);
+            preOrder(target,cur.childList.get(i),first,last);
+        }
+    }
+
+    public String printTree() throws SecondException{
+        ArrayList<OutPutNode> outPutNodes=preOrderHelper();
+        if(this.depth==-1){
+            throw new SecondException("请在验证完成后,再打印树");
+        }
+        OutPutResult outPutResult=new OutPutResult(this.depth);
+        return outPutResult.getResult(outPutNodes);
     }
 }
 
