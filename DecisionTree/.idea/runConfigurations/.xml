@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="决策树" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="interaction.InterFace" />
+    <module name="DecisionTree" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
