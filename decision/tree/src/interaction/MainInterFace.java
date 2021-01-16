@@ -161,8 +161,8 @@ public class MainInterFace extends JFrame {
                     textArea.append("请先引入数据集\n");
                 }else{
                     try{
-                        myWindow.setVisible(true);
                         myWindow.jTextArea.append(id3Tree.printTree());
+                        myWindow.setVisible(true);
                     }catch (SecondException exception){
                         textArea.append(exception.getMessage()+"\n");
                     }finally {
