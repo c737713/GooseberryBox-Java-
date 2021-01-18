@@ -75,6 +75,7 @@ public class MainInterFace extends JFrame {
         pullIn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                long  startTime = System.currentTimeMillis();
                 try{
                     myWindow.dispose();
                     myWindow.jTextArea.setText(" ");
@@ -82,13 +83,13 @@ public class MainInterFace extends JFrame {
                     Id3Tree tempId3Tree=new Id3Tree(DataBase.getDataBaseByFile(jTextField1.getText()));
                     tempId3Tree.setForTestingData(DataBase.getDataBaseByFile(jTextField2.getText()));
                     id3Tree =tempId3Tree;
-                    textArea.append("决策树构建完成\n");
+                    textArea.append("决策树构建完成,耗费的时间为"+(System.currentTimeMillis()-startTime)+"ms\n");
                 }catch (FileNotFoundException e){
                     textArea.append("文件未被找到,请检查路径\n");
                 }catch (IOException e){
                     textArea.append("文件输入流发生错误,请检查路径\n");
                 }catch (Exception e){
-                    textArea.append("发生错误,请检查\n");
+                    textArea.append("发生错误,请检查"+e.getMessage()+"\n");
                 }finally {
                     textArea.append("\n");
                 }

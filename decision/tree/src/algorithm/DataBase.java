@@ -85,7 +85,7 @@ public class DataBase {
         var result=0.0;
         for(Label temp:labelList){
             double ra= (double)labelList.size()/temp.labelCount;
-            result-=ra*Math.log(ra)/Math.log(2.0);
+            result-=ra*Math.log(ra)/Math.log(Math.E);
         }
         return result;
     }
@@ -180,11 +180,11 @@ public class DataBase {
         var maxIndex = aRange.get(0);
         var maxValue = -1.0;
         var aDouble = informationEntropy(iRange);
-        for (Integer integer : aRange) {
-            resultSet[integer] = gainInformation(stringArrayList.get(integer), aDouble, iRange);
-            if (resultSet[integer].gainInformation > maxValue) {
-                maxIndex = integer;
-                maxValue = resultSet[integer].gainInformation;
+        for (Integer index : aRange) {
+            resultSet[index] = gainInformation(stringArrayList.get(index), aDouble, iRange);
+            if (resultSet[index].gainInformation > maxValue) {
+                maxIndex = index;
+                maxValue = resultSet[index].gainInformation;
             }
         }
         return resultSet[maxIndex];
